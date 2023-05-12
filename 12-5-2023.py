@@ -11,7 +11,7 @@ def decode(encoded, codebook):
                 prev_symbol = symbol
                 break
         else:
-            raise ValueError("Invalid encoding")
+            return("Invalid encoding")
     return decoded
 
 # The codebook
