@@ -1,29 +1,33 @@
-def get_minimum_steps(series):
-    steps = 0
+def find_minimum_deletion(l, r, dp, s):
+    if l > r:
+        return 0
+    if l == r:
+        return 1
+    if dp[l][r] != -1:
+        return dp[l][r]
 
-    while series:
-        array = list(series)
-        new_array = []
+    # When a single character is deleted
+    res = 1 + find_minimum_deletion(l + 1, r, dp, s)
 
-        for i in range(len(array) - 1):
-            if array[i] != array[i + 1]:
-                new_array.append(array[i])
-        
-        new_array.append(array[len(array) - 1])
+    # When a group of consecutive characters
+    # are deleted if any of them matches
+    for i in range(l + 1, r + 1):
+        # When both the characters are same then
+        # delete the letters in between them
+        if s[l] == s[i]:
+            res = min(res, find_minimum_deletion(l + 1, i - 1, dp, s) +
+                      find_minimum_deletion(i, r, dp, s))
 
-        count = {}
-        for element in new_array:
-            count[element] = count.get(element, 0) + 1
+    # Memoize
+    dp[l][r] = res
+    return res
 
-        min_count = min(count.values())
-        array = [x for x in new_array if count[x] != min_count]
 
-        steps += len(new_array) - len(array)
-        series = "".join(array)
-
-    return steps
-
-series = "kjslaqpwoereeeeewwwefifjdksjdfhjdksdjfkdfdlddkjdjfjfjfjjjjfjffnefhkjgefkgjefkjgkefjekihutrieruhigtefhgbjkkkknbmssdsdsfdvneurghiueor"
-steps = get_minimum_steps(series)
-print("Minimum steps:", steps)
+# Driver code
+if __name__ == "__main__":
+    s = "kjslaqpwoereeeeewwwefifjdksjdfhjdksdjfkdfdlddkjdjfjfjfjjjjfjffnefhkjgefkgjefkjgkefjekihutrieruhigtefhgbjkkkknbmssdsdsfdvneurghiueor"
+    n = len(s)
+    N = 200
+    dp = [[-1 for i in range(N)] for j in range(N)]
+    print(find_minimum_deletion(0, n - 1, dp, s))
 
